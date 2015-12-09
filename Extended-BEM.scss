@@ -1,0 +1,95 @@
+/*
+    Author: Geoffrey McIntyre
+    Email:  geoffreymcintyre89@gmail.com
+    Date:   9/12/15
+*/
+
+// Start BEM SASS Structure Setup
+$elementSeparator: "__"; 
+$modifierSeparator: "--";
+$selectorSeperator: ":";
+$classIdentifier: ".";
+
+// Convert selector to string
+@function selectorToString($selector) {
+    $selector: inspect($selector); //cast to string
+    $selector: str-slice($selector, 2, -2); //remove bracket
+    @return $selector;
+}
+
+// Check if a string contains a seperator
+@function containsSeperator($selector, $separator) {
+    $selector: selectorToString($selector);
+    @if str-index($selector, $separator) {
+        @return true;
+    }
+    @else { 
+        @return false;
+    }
+}
+
+// Get the block from a string
+@function getBlock($selector, $seperator, $firstRun) {
+    @if $firstRun == true { // If already converted to string. Don't convert again.
+        $selector: selectorToString($selector);
+    }
+    $modifierStart: str-index($selector, $seperator);
+    @return str-slice($selector, 0, $modifierStart - 1);
+}
+
+// Remove other element from string
+@function getElement($block, $element) {
+    @if containsSeperator($block, $elementSeparator) {
+        $block: getBlock($block, $elementSeparator, false);
+        @return $classIdentifier+$block+$elementSeparator+$element;
+    }
+    @else {
+        @return $classIdentifier+$block+$elementSeparator+$element;
+    }
+}
+
+// Build Block (b)
+@mixin b($block) {
+   .#{$block} {
+       @content; 
+   }
+}
+
+// Build Element (e)
+@mixin e($element) {
+    $selector: &;
+    $containsModifier: containsSeperator($selector, $modifierSeparator);
+    $containsSelector: containsSeperator($selector, $selectorSeperator);
+    @if $containsModifier == true or $containsSelector == true {
+        @if $containsModifier == true {
+            $block: getBlock($selector, $modifierSeparator, true);
+        }
+        @else if $containsSelector == true {
+            $block: getBlock($selector, $elementSeparator, true);
+        }
+        $element: getElement($block, $element);
+        @at-root {
+            #{$selector} {
+                #{$element} {
+                    @content;
+                }
+            }
+        }
+    }
+    @else {
+        @at-root {
+            #{$selector+$elementSeparator+$element} {
+                @content;
+            }
+        }
+    }
+}
+
+// Build Modifier (M)
+@mixin m($modifier) {
+    @at-root {
+        #{&}#{$modifierSeparator+$modifier} {
+            @content;
+        }
+    }
+}
