@@ -11,62 +11,62 @@ I extended it so that selectors can be used to affect subelements. I believe thi
 
 # How to use
 
-@include b(blockName) {
-
-    @include m(modifierName) {
+    @include b(blockName) {
+    
+        @include m(modifierName) {
+            
+        }
         
+        @include e(elementName) {
+        
+        }
     }
-    
-    @include e(elementName) {
-    
-    }
-}
 
 ## Sample Usage Script
 
-@include b(block) {
-    background: red;
-    
-    @include m(modifier) {
-        color: blue;
+    @include b(block) {
+        background: red;
         
-        @include e(subelement) { 
-            background: gray;
-        }
-        
-        &:nth-child(odd){
-            color: green;
-
+        @include m(modifier) {
+            color: blue;
+            
             @include e(subelement) { 
                 background: gray;
             }
-        }
-    }
-    
-    @include e(element) { 
-        background: orange;
-        
-        @include m(modifier) {
-            color: yellow;
             
             &:nth-child(odd){
-                color: yellowgreen;
-
+                color: green;
+    
                 @include e(subelement) { 
-                    background: black;
+                    background: gray;
                 }
             }
         }
         
-        &:nth-child(odd){
-            color: tan;
-
-            @include e(subelement) { 
-                background: cyan;
+        @include e(element) { 
+            background: orange;
+            
+            @include m(modifier) {
+                color: yellow;
+                
+                &:nth-child(odd){
+                    color: yellowgreen;
+    
+                    @include e(subelement) { 
+                        background: black;
+                    }
+                }
+            }
+            
+            &:nth-child(odd){
+                color: tan;
+    
+                @include e(subelement) { 
+                    background: cyan;
+                }
             }
         }
     }
-}
 
 ## Output
 
